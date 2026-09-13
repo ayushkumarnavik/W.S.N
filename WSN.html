@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WSN — Web Social Network</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Inter,Arial,sans-serif;
+}
+
+body{
+    background:#05070d;
+    color:white;
+    min-height:100vh;
+    overflow-x:hidden;
+}
+
+/* BACKGROUND */
+.bg{
+    position:fixed;
+    inset:0;
+    z-index:-2;
+    background:
+        radial-gradient(circle at 20% 20%,#6c2cff44,transparent 30%),
+        radial-gradient(circle at 80% 70%,#00e5ff33,transparent 30%),
+        #05070d;
+}
+
+.orb{
+    position:fixed;
+    width:300px;
+    height:300px;
+    border-radius:50%;
+    filter:blur(80px);
+    opacity:.35;
+    z-index:-1;
+    animation:float 8s infinite alternate ease-in-out;
+}
+
+.orb.one{
+    background:#7c3cff;
+    top:-100px;
+    left:-100px;
+}
+
+.orb.two{
+    background:#00d9ff;
+    right:-100px;
+    bottom:-100px;
+    animation-delay:2s;
+}
+
+@keyframes float{
+    to{transform:translate(70px,40px) scale(1.2);}
+}
+
+/* LOGIN */
+#login{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+}
+
+.login-card{
+    width:100%;
+    max-width:430px;
+    padding:35px;
+    border:1px solid #ffffff1c;
+    background:#10131dcc;
+    backdrop-filter:blur(25px);
+    border-radius:28px;
+    box-shadow:0 30px 80px #0008;
+    animation:appear .8s ease;
+}
+
+@keyframes appear{
+    from{
+        opacity:0;
+        transform:translateY(30px) scale(.96);
+    }
+    to{
+        opacity:1;
+        transform:none;
+    }
+}
+
+.logo{
+    text-align:center;
+    font-size:64px;
+    font-weight:1000;
+    letter-spacing:-6px;
+    background:linear-gradient(90deg,#9d5cff,#00eaff);
+    -webkit-background-clip:text;
+    color:transparent;
+    text-shadow:0 0 40px #7b4dff55;
+    animation:logoPulse 3s infinite;
+}
+
+@keyframes logoPulse{
+    50%{filter:drop-shadow(0 0 20px #7c5cff77);}
+}
+
+.subtitle{
+    text-align:center;
+    color:#9da3b5;
+    margin:5px 0 30px;
+}
+
+label{
+    display:block;
+    color:#cbd0dc;
+    font-size:13px;
+    margin:15px 0 7px;
+}
+
+input{
+    width:100%;
+    padding:15px;
+    border-radius:13px;
+    border:1px solid #ffffff18;
+    outline:none;
+    background:#080a10;
+    color:white;
+    font-size:15px;
+}
+
+input:focus{
+    border-color:#815cff;
+    box-shadow:0 0 0 3px #815cff18;
+}
+
+.primary{
+    width:100%;
+    padding:15px;
+    margin-top:22px;
+    border:0;
+    border-radius:14px;
+    background:linear-gradient(90deg,#7748ff,#00c8ff);
+    color:white;
+    font-weight:800;
+    font-size:16px;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.primary:hover{
+    transform:translateY(-3px);
+    box-shadow:0 12px 35px #684cff55;
+}
+
+.note{
+    color:#777e91;
+    font-size:11px;
+    text-align:center;
+    margin-top:15px;
+}
+
+/* APP */
+#app{
+    display:none;
+}
+
+.topbar{
+    position:sticky;
+    top:0;
+    z-index:20;
+    height:70px;
+    padding:0 5%;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    background:#070910dd;
+    backdrop-filter:blur(20px);
+    border-bottom:1px solid #ffffff12;
+}
+
+.small-logo{
+    font-size:31px;
+    font-weight:1000;
+    letter-spacing:-3px;
+    background:linear-gradient(90deg,#9d5cff,#00eaff);
+    -webkit-background-clip:text;
+    color:transparent;
+}
+
+.search{
+    width:35%;
+    max-width:400px;
+}
+
+.search input{
+    padding:11px 15px;
+    border-radius:30px;
+}
+
+.profile-button{
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    border:2px solid #795cff;
+    background:linear-gradient(135deg,#6d3cff,#00d9ff);
+    color:white;
+    font-weight:bold;
+}
+
+/* NAV */
+.nav{
+    position:fixed;
+    left:0;
+    top:70px;
+    bottom:0;
+    width:220px;
+    padding:25px 15px;
+    background:#080a10bb;
+    border-right:1px solid #ffffff12;
+}
+
+.nav button{
+    width:100%;
+    padding:15px;
+    margin-bottom:8px;
+    border:0;
+    border-radius:12px;
+    background:transparent;
+    color:#9da3b5;
+    text-align:left;
+    font-size:15px;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.nav button:hover,
+.nav button.active{
+    background:#ffffff0d;
+    color:white;
+}
+
+.nav .upload{
+    background:linear-gradient(90deg,#7548ff,#00bce8);
+    color:white;
+    text-align:center;
+    margin-top:15px;
+}
+
+/* CONTENT */
+.content{
+    margin-left:220px;
+    padding:30px;
+    max-width:1000px;
+    margin-right:auto;
+}
+
+.page-title{
+    font-size:30px;
+    margin-bottom:6px;
+}
+
+.page-sub{
+    color:#858b9c;
+    margin-bottom:25px;
+}
+
+/* CREATE */
+.create{
+    padding:20px;
+    background:#10131cbb;
+    border:1px solid #ffffff12;
+    border-radius:20px;
+    margin-bottom:25px;
+}
+
+.create-top{
+    display:flex;
+    gap:12px;
+}
+
+.avatar{
+    min-width:45px;
+    width:45px;
+    height:45px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#7548ff,#00d9ff);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-weight:bold;
+}
+
+.create textarea{
+    width:100%;
+    height:65px;
+    resize:none;
+    border:0;
+    outline:none;
+    border-radius:12px;
+    background:#080a10;
+    color:white;
+    padding:15px;
+}
+
+.create-bottom{
+    display:flex;
+    justify-content:space-between;
+    margin-top:15px;
+}
+
+.media-button{
+    background:#ffffff0c;
+    border:1px solid #ffffff12;
+    color:#b9c0cf;
+    padding:10px 15px;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+/* POSTS */
+.post{
+    background:#0e1119;
+    border:1px solid #ffffff12;
+    border-radius:20px;
+    margin-bottom:25px;
+    overflow:hidden;
+    animation:postIn .5s ease;
+}
+
+@keyframes postIn{
+    from{
+        opacity:0;
+        transform:translateY(15px);
+    }
+}
+
+.post-head{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:16px;
+}
+
+.post-user{
+    font-weight:bold;
+}
+
+.post-time{
+    color:#72798b;
+    font-size:12px;
+}
+
+.post-text{
+    padding:0 16px 16px;
+    color:#d5d8e0;
+    line-height:1.5;
+}
+
+.post-media{
+    width:100%;
+    max-height:650px;
+    object-fit:cover;
+    display:block;
+    background:#05070d;
+}
+
+.post-actions{
+    display:flex;
+    gap:8px;
+    padding:13px 16px;
+    border-top:1px solid #ffffff0d;
+}
+
+.post-actions button{
+    background:#ffffff08;
+    border:0;
+    color:#aeb4c2;
+    padding:10px 15px;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+.post-actions button:hover{
+    color:white;
+    background:#ffffff12;
+}
+
+/* CHAT */
+.chat-box{
+    display:grid;
+    grid-template-columns:250px 1fr;
+    min-height:520px;
+    background:#0e1119;
+    border:1px solid #ffffff12;
+    border-radius:20px;
+    overflow:hidden;
+}
+
+.users{
+    border-right:1px solid #ffffff12;
+}
+
+.user{
+    padding:16px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    cursor:pointer;
+}
+
+.user:hover{
+    background:#ffffff08;
+}
+
+.chat{
+    display:flex;
+    flex-direction:column;
+}
+
+.chat-head{
+    padding:16px;
+    border-bottom:1px solid #ffffff12;
+    font-weight:bold;
+}
+
+.messages{
+    flex:1;
+    padding:20px;
+}
+
+.bubble{
+    width:max-content;
+    max-width:75%;
+    padding:11px 15px;
+    background:#1c2030;
+    border-radius:15px;
+    margin-bottom:10px;
+}
+
+.me{
+    margin-left:auto;
+    background:linear-gradient(90deg,#6843d9,#126e9a);
+}
+
+.chat-input{
+    display:flex;
+    gap:10px;
+    padding:15px;
+    border-top:1px solid #ffffff12;
+}
+
+/* PROFILE */
+.profile{
+    text-align:center;
+    background:#0e1119;
+    border:1px solid #ffffff12;
+    border-radius:22px;
+    padding:30px;
+}
+
+.big-avatar{
+    width:100px;
+    height:100px;
+    margin:auto;
+    border-radius:50%;
+    background:linear-gradient(135deg,#7548ff,#00d9ff);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:38px;
+    font-weight:bold;
+}
+
+.profile h2{
+    margin-top:15px;
+}
+
+.profile p{
+    color:#858b9c;
+    margin-top:5px;
+}
+
+/* HIDDEN */
+.page{
+    display:none;
+}
+
+.page.active{
+    display:block;
+}
+
+/* MOBILE */
+@media(max-width:800px){
+
+    .topbar{
+        padding:0 15px;
+    }
+
+    .search{
+        width:45%;
+    }
+
+    .nav{
+        top:auto;
+        bottom:0;
+        width:100%;
+        height:65px;
+        padding:5px;
+        display:flex;
+        background:#080a10ee;
+        border-right:0;
+        border-top:1px solid #ffffff12;
+        z-index:50;
+    }
+
+    .nav button{
+        margin:0;
+        padding:8px 4px;
+        text-align:center;
+        font-size:11px;
+    }
+
+    .nav .upload{
+        margin:0;
+    }
+
+    .content{
+        margin-left:0;
+        padding:20px 12px 90px;
+    }
+
+    .chat-box{
+        grid-template-columns:1fr;
+    }
+
+    .users{
+        display:none;
+    }
+
+    .small-logo{
+        font-size:25px;
+    }
+
+    .page-title{
+        font-size:25px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="bg"></div>
+<div class="orb one"></div>
+<div class="orb two"></div>
+
+
+<!-- LOGIN / REGISTER -->
+<section id="login">
+
+<div class="login-card">
+
+    <div class="logo">WSN</div>
+
+    <div class="subtitle">
+        Web Social Network
+    </div>
+
+    <label>Phone Number</label>
+
+    <input
+        id="phone"
+        type="tel"
+        placeholder="Enter your correct phone number"
+        maxlength="15"
+    >
+
+    <label>Custom Username</label>
+
+    <input
+        id="username"
+        type="text"
+        placeholder="Choose your public username"
+        maxlength="20"
+    >
+
+    <button class="primary" onclick="enterWSN()">
+        Enter WSN ✨
+    </button>
+
+    <div class="note">
+        Your phone number is used for account identification.
+        Your public username is what other users see.
+    </div>
+
+</div>
+
+</section>
+
+
+<!-- APP -->
+<section id="app">
+
+<header class="topbar">
+
+    <div class="small-logo">WSN</div>
+
+    <div class="search">
+        <input
+            id="search"
+            type="text"
+            placeholder="🔎 Search WSN"
+            oninput="searchUsers()"
+        >
+    </div>
+
+    <button class="profile-button" onclick="showPage('profile')">
+        <span id="avatarLetter">U</span>
+    </button>
+
+</header>
+
+
+<nav class="nav">
+
+    <button class="active" onclick="showPage('home',this)">
+        🏠 Home
+    </button>
+
+    <button onclick="showPage('reels',this)">
+        🎬 Reels
+    </button>
+
+    <button onclick="showPage('messages',this)">
+        💬 Chat
+    </button>
+
+    <button onclick="showPage('profile',this)">
+        👤 Profile
+    </button>
+
+    <button class="upload" onclick="openUpload()">
+        ＋ Post
+    </button>
+
+</nav>
+
+
+<main class="content">
+
+<!-- HOME -->
+<div id="home" class="page active">
+
+    <h1 class="page-title">Welcome to WSN</h1>
+
+    <p class="page-sub">
+        Discover what people are sharing.
+    </p>
+
+    <div class="create">
+
+        <div class="create-top">
+
+            <div class="avatar" id="createAvatar">
+                U
+            </div>
+
+            <textarea
+                id="postText"
+                placeholder="What's happening?"
+            ></textarea>
+
+        </div>
+
+        <div class="create-bottom">
+
+            <button
+                class="media-button"
+                onclick="openUpload()">
+                🎬 Add Reel / Photo
+            </button>
+
+            <button
+                class="primary"
+                style="width:auto;margin:0;padding:10px 20px"
+                onclick="createPost()">
+                Post
+            </button>
+
+        </div>
+
+    </div>
+
+    <div id="feed"></div>
+
+</div>
+
+
+<!-- REELS -->
+<div id="reels" class="page">
+
+    <h1 class="page-title">Reels 🎬</h1>
+
+    <p class="page-sub">
+        Short videos shared on WSN.
+    </p>
+
+    <div id="reelFeed"></div>
+
+</div>
+
+
+<!-- MESSAGES -->
+<div id="messages" class="page">
+
+    <h1 class="page-title">Messages 💬</h1>
+
+    <p class="page-sub">
+        Chat with people on WSN.
+    </p>
+
+    <div class="chat-box">
+
+        <div class="users">
+
+            <div class="user">
+                <div class="avatar">W</div>
+                <div>WSN Community</div>
+            </div>
+
+            <div class="user">
+                <div class="avatar">A</div>
+                <div>Available Users</div>
+            </div>
+
+        </div>
+
+        <div class="chat">
+
+            <div class="chat-head">
+                WSN Community
+            </div>
+
+            <div class="messages" id="messagesList">
+
+                <div class="bubble">
+                    Welcome to WSN! 👋
+                </div>
+
+            </div>
+
+            <div class="chat-input">
+
+                <input
+                    id="chatMessage"
+                    placeholder="Write a message..."
+                >
+
+                <button
+                    class="primary"
+                    style="width:auto;margin:0"
+                    onclick="sendChat()">
+                    Send
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- PROFILE -->
+<div id="profile" class="page">
+
+    <div class="profile">
+
+        <div class="big-avatar" id="bigAvatar">
+            U
+        </div>
+
+        <h2 id="profileName">@username</h2>
+
+        <p>WSN member</p>
+
+        <br>
+
+        <p>
+            Posts: <b id="postCount">0</b>
+            &nbsp; • &nbsp;
+            Reels: <b id="reelCount">0</b>
+        </p>
+
+    </div>
+
+</div>
+
+</main>
+
+</section>
+
+
+<!-- FILE INPUT -->
+<input
+    type="file"
+    id="mediaInput"
+    accept="image/*,video/*"
+    multiple
+    hidden
+    onchange="handleMedia(event)"
+>
+
+
+<script>
+
+let currentUser = "";
+let posts = JSON.parse(localStorage.getItem("wsnPosts") || "[]");
+
+
+/* ENTER WSN */
+function enterWSN(){
+
+    const phone =
+        document.getElementById("phone").value.trim();
+
+    const username =
+        document.getElementById("username").value.trim();
+
+    if(!phone){
+        alert("Please enter your correct phone number.");
+        return;
+    }
+
+    if(phone.length < 7){
+        alert("Please enter a valid phone number.");
+        return;
+    }
+
+    if(!username){
+        alert("Please choose a username.");
+        return;
+    }
+
+    if(username.length < 3){
+        alert("Username must contain at least 3 characters.");
+        return;
+    }
+
+    currentUser = username;
+
+    localStorage.setItem("wsnUser",username);
+
+    document.getElementById("login").style.display="none";
+    document.getElementById("app").style.display="block";
+
+    updateProfile();
+
+    renderFeed();
+
+}
+
+
+/* PROFILE */
+function updateProfile(){
+
+    const letter =
+        currentUser.charAt(0).toUpperCase();
+
+    document.getElementById("avatarLetter")
+        .innerText = letter;
+
+    document.getElementById("createAvatar")
+        .innerText = letter;
+
+    document.getElementById("bigAvatar")
+        .innerText = letter;
+
+    document.getElementById("profileName")
+        .innerText = "@" + currentUser;
+
+}
+
+
+/* PAGE NAVIGATION */
+function showPage(page,button){
+
+    document.querySelectorAll(".page")
+        .forEach(p=>p.classList.remove("active"));
+
+    document.getElementById(page)
+        .classList.add("active");
+
+    document.querySelectorAll(".nav button")
+        .forEach(b=>b.classList.remove("active"));
+
+    if(button)
+        button.classList.add("active");
+
+    if(page==="reels")
+        renderReels();
+
+}
+
+
+/* CREATE TEXT POST */
+function createPost(){
+
+    const text =
+        document.getElementById("postText")
+        .value.trim();
+
+    if(!text){
+        alert("Write something first.");
+        return;
+    }
+
+    posts.unshift({
+        user:currentUser,
+        text:text,
+        media:"",
+        type:"text",
+        time:new Date().toLocaleString(),
+        likes:0
+    });
+
+    savePosts();
+
+    document.getElementById("postText").value="";
+
+    renderFeed();
+
+}
+
+
+/* OPEN UPLOAD */
+function openUpload(){
+
+    document.getElementById("mediaInput").click();
+
+}
+
+
+/* MEDIA UPLOAD */
+function handleMedia(event){
+
+    const files = [...event.target.files];
+
+    files.forEach(file=>{
+
+        const reader = new FileReader();
+
+        reader.onload = function(e){
+
+            const isVideo =
+                file.type.startsWith("video");
+
+            posts.unshift({
+
+                user:currentUser,
+
+                text:"",
+
+                media:e.target.result,
+
+                type:isVideo ? "video":"image",
+
+                time:new Date().toLocaleString(),
+
+                likes:0
+
+            });
+
+            savePosts();
+
+            renderFeed();
+
+            renderReels();
+
+        };
+
+        reader.readAsDataURL(file);
+
+    });
+
+    event.target.value="";
+
+}
+
+
+/* SAVE */
+function savePosts(){
+
+    localStorage.setItem(
+        "wsnPosts",
+        JSON.stringify(posts)
+    );
+
+    updateCounts();
+
+}
+
+
+/* FEED */
+function renderFeed(){
+
+    const feed =
+        document.getElementById("feed");
+
+    feed.innerHTML="";
+
+    if(posts.length===0){
+
+        feed.innerHTML=`
+        <div class="create">
+            <p style="color:#858b9c">
+                No posts yet. Be the first person to post on WSN! 🚀
+            </p>
+        </div>`;
+
+        return;
+    }
+
+    posts.forEach((post,index)=>{
+
+        feed.innerHTML += createPostHTML(post,index);
+
+    });
+
+    updateCounts();
+
+}
+
+
+/* POST HTML */
+function createPostHTML(post,index){
+
+    let media="";
+
+    if(post.type==="image"){
+
+        media=`
+        <img
+            class="post-media"
+            src="${post.media}"
+        >`;
+
+    }
+
+    if(post.type==="video"){
+
+        media=`
+        <video
+            class="post-media"
+            controls
+            playsinline>
+            <source src="${post.media}">
+        </video>`;
+
+    }
+
+    return `
+
+    <article class="post">
+
+        <div class="post-head">
+
+            <div class="avatar">
+                ${post.user.charAt(0).toUpperCase()}
+            </div>
+
+            <div>
+                <div class="post-user">
+                    @${escapeHTML(post.user)}
+                </div>
+
+                <div class="post-time">
+                    ${post.time}
+                </div>
+            </div>
+
+        </div>
+
+        ${
+            post.text
+            ? `<div class="post-text">
+                ${escapeHTML(post.text)}
+               </div>`
+            : ""
+        }
+
+        ${media}
+
+        <div class="post-actions">
+
+            <button onclick="likePost(${index})">
+                ❤️ ${post.likes || 0}
+            </button>
+
+            <button onclick="alert('Comments feature ready for backend connection.')">
+                💬 Comment
+            </button>
+
+            <button onclick="sharePost(${index})">
+                ↗ Share
+            </button>
+
+        </div>
+
+    </article>
+
+    `;
+
+}
+
+
+/* REELS */
+function renderReels(){
+
+    const reelFeed =
+        document.getElementById("reelFeed");
+
+    reelFeed.innerHTML="";
+
+    const reels =
+        posts.filter(p=>p.type==="video");
+
+    if(reels.length===0){
+
+        reelFeed.innerHTML=`
+        <div class="create">
+            <p style="color:#858b9c">
+                No reels yet. Upload your first reel! 🎬
+            </p>
+        </div>`;
+
+        return;
+    }
+
+    reels.forEach((reel,index)=>{
+
+        reelFeed.innerHTML += `
+        <article class="post">
+
+            <div class="post-head">
+
+                <div class="avatar">
+                    ${reel.user.charAt(0).toUpperCase()}
+                </div>
+
+                <div>
+                    <div class="post-user">
+                        @${escapeHTML(reel.user)}
+                    </div>
+                    <div class="post-time">
+                        ${reel.time}
+                    </div>
+                </div>
+
+            </div>
+
+            <video
+                class="post-media"
+                controls
+                playsinline
+                loop>
+                <source src="${reel.media}">
+            </video>
+
+            <div class="post-actions">
+
+                <button>
+                    ❤️ ${reel.likes || 0}
+                </button>
+
+                <button>
+                    💬 Comment
+                </button>
+
+                <button>
+                    ↗ Share
+                </button>
+
+      
